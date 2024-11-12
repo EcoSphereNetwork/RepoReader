@@ -4,7 +4,7 @@ import tempfile
 from dotenv import load_dotenv
 from langchain import PromptTemplate, LLMChain
 from langchain.llms import OpenAI
-from config import WHITE, GREEN, RESET_COLOR, model_name
+from config import WHITE, GREEN, RESET_COLOR, model_name, LM_STUDIO_BASE_URL
 from utils import format_user_question
 from file_processing import clone_github_repo, load_and_index_files
 from questions import ask_question, QuestionContext
@@ -24,7 +24,12 @@ def main():
                 exit()
 
             print("Repository cloned. Indexing files...")
-            llm = OpenAI(api_key=OPENAI_API_KEY, temperature=0.2)
+            llm = OpenAI(
+                model=model_name,
+                temperature=0.2,
+                openai_api_base=LM_STUDIO_BASE_URL,
+                openai_api_key="not-needed"
+            )
 
             template = """
             Repo: {repo_name} ({github_url}) | Conv: {conversation_history} | Docs: {numbered_documents} | Q: {question} | FileCount: {file_type_counts} | FileNames: {filenames}
